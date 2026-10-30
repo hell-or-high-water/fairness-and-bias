@@ -1,0 +1,3 @@
+Fairness metric,Definition,Computed value (unpriv vs priv),Ideal value,Acceptable range,Bias?,Before (single threshold)
+Disparate Impact,P(approved | unpriv) / P(approved | priv),0.9886,1.0,"[0.8, 1.25]",No significant bias (within fair range),0.9732
+Statistical Parity Difference,P(approved | unpriv) - P(approved | priv),-0.009,0.0,"[-0.1, 0.1]",No significant bias (within fair range),-0.0212

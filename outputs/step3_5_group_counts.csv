@@ -1,0 +1,4 @@
+,Training set,Testing set
+Privileged: Old (age > 25),418,392
+Unprivileged: Young (age <= 25),82,108
+Total,500,500

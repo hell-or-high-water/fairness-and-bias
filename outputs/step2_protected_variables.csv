@@ -1,0 +1,4 @@
+Variable,Protected class,Legal precedent / law
+age (Attribute 13),Age,"US: Equal Credit Opportunity Act (ECOA, 1974; 15 U.S.C. 1691) / Regulation B; Age Discrimination Act of 1975. Germany: General Equal Treatment Act (AGG, 2006)."
+personal_status_sex (Attribute 9),Sex and marital status,"US: ECOA (sex and marital status), Fair Housing Act (sex). Germany: AGG (sex); EU Gender Goods & Services Directive 2004/113/EC."
+foreign_worker (Attribute 20),National origin / citizenship (proxy),"US: ECOA (national origin), Civil Rights Act of 1964 Title VI, Fair Housing Act. Germany: AGG (ethnic origin); EU Race Equality Directive 2000/43/EC."

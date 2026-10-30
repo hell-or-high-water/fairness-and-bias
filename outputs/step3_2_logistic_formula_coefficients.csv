@@ -1,0 +1,45 @@
+variable,term,coefficient
+intercept,,0.6643
+duration_months,per unit,-0.038
+credit_amount,per unit,-0.0001
+installment_rate,per unit,-0.2956
+residence_since,per unit,-0.1276
+existing_credits,per unit,-0.3334
+num_dependents,per unit,-0.2293
+checking_status,= A12 (vs. baseline),0.4953
+checking_status,= A13 (vs. baseline),0.6283
+checking_status,= A14 (vs. baseline),1.7532
+credit_history,= A31 (vs. baseline),-0.8988
+credit_history,= A32 (vs. baseline),0.4695
+credit_history,= A33 (vs. baseline),0.2861
+credit_history,= A34 (vs. baseline),1.5116
+purpose,= A41 (vs. baseline),1.3441
+purpose,= A410 (vs. baseline),0.4407
+purpose,= A42 (vs. baseline),0.0954
+purpose,= A43 (vs. baseline),0.4734
+purpose,= A44 (vs. baseline),-0.2614
+purpose,= A45 (vs. baseline),0.1137
+purpose,= A46 (vs. baseline),0.0419
+purpose,= A48 (vs. baseline),0.6695
+purpose,= A49 (vs. baseline),0.3613
+savings,= A62 (vs. baseline),0.2224
+savings,= A63 (vs. baseline),0.0086
+savings,= A64 (vs. baseline),1.4832
+savings,= A65 (vs. baseline),0.4088
+employment_since,= A72 (vs. baseline),-0.1009
+employment_since,= A73 (vs. baseline),0.0168
+employment_since,= A74 (vs. baseline),0.428
+employment_since,= A75 (vs. baseline),0.4873
+other_debtors,= A102 (vs. baseline),0.4888
+other_debtors,= A103 (vs. baseline),0.7823
+property,= A122 (vs. baseline),0.1019
+property,= A123 (vs. baseline),0.1757
+property,= A124 (vs. baseline),-0.4591
+other_installment_plans,= A142 (vs. baseline),-0.1594
+other_installment_plans,= A143 (vs. baseline),0.7249
+housing,= A152 (vs. baseline),0.4609
+housing,= A153 (vs. baseline),0.5897
+job,= A172 (vs. baseline),0.0766
+job,= A173 (vs. baseline),0.1867
+job,= A174 (vs. baseline),-0.1361
+telephone,= A192 (vs. baseline),0.3759

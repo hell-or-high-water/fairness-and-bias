@@ -1,0 +1,200 @@
+
+==============================================================================
+STEP 1 - Dataset selection
+==============================================================================
+Dataset: Statlog German Credit Data (Prof. Hans Hofmann, Univ. Hamburg), file german.data
+
+==============================================================================
+STEP 2 - Explore the dataset
+==============================================================================
+2.1 Number of observations: 1000
+2.2 Number of variables:    21 (20 attributes + 1 outcome variable 'class'; 7 numerical, 13 categorical attributes)
+2.3 Variables tied to a legally recognised protected class:
+                         Variable                       Protected class                                                                                                                                           Legal precedent / law
+               age (Attribute 13)                                   Age US: Equal Credit Opportunity Act (ECOA, 1974; 15 U.S.C. 1691) / Regulation B; Age Discrimination Act of 1975. Germany: General Equal Treatment Act (AGG, 2006).
+personal_status_sex (Attribute 9)                Sex and marital status                                US: ECOA (sex and marital status), Fair Housing Act (sex). Germany: AGG (sex); EU Gender Goods & Services Directive 2004/113/EC.
+    foreign_worker (Attribute 20) National origin / citizenship (proxy)           US: ECOA (national origin), Civil Rights Act of 1964 Title VI, Fair Housing Act. Germany: AGG (ethnic origin); EU Race Equality Directive 2000/43/EC.
+  [table saved -> outputs/step2_protected_variables.csv]
+
+Other quick facts:
+  Outcome distribution: {'good (1)': 700, 'bad (2)': 300}
+  Age range: 19-75, median 33
+  Missing values: 0
+
+==============================================================================
+STEP 3.1 - Outcome variable
+==============================================================================
+Outcome variable: 'class'  (1 = Good credit risk -> loan approved, 2 = Bad credit risk -> loan denied)
+
+==============================================================================
+STEP 3.3 / 3.4 - Protected attribute and groups
+==============================================================================
+Protected class attribute: age
+Privileged group:   Old (age > 25)
+Unprivileged group: Young (age <= 25)
+
+==============================================================================
+STEP 3.5 - Train / test split
+==============================================================================
+                                 Training set  Testing set
+Privileged: Old (age > 25)                418          392
+Unprivileged: Young (age <= 25)            82          108
+Total                                     500          500
+  [table saved -> outputs/step3_5_group_counts.csv]
+
+==============================================================================
+STEP 3.2 - Creditworthiness formula
+==============================================================================
+Variables used (17): ['checking_status', 'duration_months', 'credit_history', 'purpose', 'credit_amount', 'savings', 'employment_since', 'installment_rate', 'other_debtors', 'residence_since', 'property', 'other_installment_plans', 'housing', 'existing_credits', 'job', 'num_dependents', 'telephone']
+Variables excluded (protected): ['age', 'personal_status_sex', 'foreign_worker']
+Formula: Creditworthiness = 100 / (1 + exp(-z)),  z = b0 + SUM(b_i * x_i)
+  (= 100 x predicted probability of being a Good Credit Risk; categorical x_i are 0/1 indicators; baseline level = first code of each variable)
+               variable                  term  coefficient
+              intercept                             0.6643
+        duration_months              per unit      -0.0380
+          credit_amount              per unit      -0.0001
+       installment_rate              per unit      -0.2956
+        residence_since              per unit      -0.1276
+       existing_credits              per unit      -0.3334
+         num_dependents              per unit      -0.2293
+        checking_status  = A12 (vs. baseline)       0.4953
+        checking_status  = A13 (vs. baseline)       0.6283
+        checking_status  = A14 (vs. baseline)       1.7532
+         credit_history  = A31 (vs. baseline)      -0.8988
+         credit_history  = A32 (vs. baseline)       0.4695
+         credit_history  = A33 (vs. baseline)       0.2861
+         credit_history  = A34 (vs. baseline)       1.5116
+                purpose  = A41 (vs. baseline)       1.3441
+                purpose = A410 (vs. baseline)       0.4407
+                purpose  = A42 (vs. baseline)       0.0954
+                purpose  = A43 (vs. baseline)       0.4734
+                purpose  = A44 (vs. baseline)      -0.2614
+                purpose  = A45 (vs. baseline)       0.1137
+                purpose  = A46 (vs. baseline)       0.0419
+                purpose  = A48 (vs. baseline)       0.6695
+                purpose  = A49 (vs. baseline)       0.3613
+                savings  = A62 (vs. baseline)       0.2224
+                savings  = A63 (vs. baseline)       0.0086
+                savings  = A64 (vs. baseline)       1.4832
+                savings  = A65 (vs. baseline)       0.4088
+       employment_since  = A72 (vs. baseline)      -0.1009
+       employment_since  = A73 (vs. baseline)       0.0168
+       employment_since  = A74 (vs. baseline)       0.4280
+       employment_since  = A75 (vs. baseline)       0.4873
+          other_debtors = A102 (vs. baseline)       0.4888
+          other_debtors = A103 (vs. baseline)       0.7823
+               property = A122 (vs. baseline)       0.1019
+               property = A123 (vs. baseline)       0.1757
+               property = A124 (vs. baseline)      -0.4591
+other_installment_plans = A142 (vs. baseline)      -0.1594
+other_installment_plans = A143 (vs. baseline)       0.7249
+                housing = A152 (vs. baseline)       0.4609
+                housing = A153 (vs. baseline)       0.5897
+                    job = A172 (vs. baseline)       0.0766
+                    job = A173 (vs. baseline)       0.1867
+                    job = A174 (vs. baseline)      -0.1361
+              telephone = A192 (vs. baseline)       0.3759
+  [table saved -> outputs/step3_2_logistic_formula_coefficients.csv]
+
+Training-set score summary: {'count': 500.0, 'mean': 70.6, 'std': 25.4, 'min': 2.0, '25%': 55.0, '50%': 79.5, '75%': 92.0, 'max': 100.0}
+
+==============================================================================
+STEP 4.1 - Histogram of creditworthiness (training set)
+==============================================================================
+  [figure saved -> outputs/step4_1_histogram.png]
+
+==============================================================================
+STEP 4.2 - Profit-maximising threshold (training set)
+==============================================================================
+Threshold X that maximises profit: 48
+Maximum profit on training set:   2555
+  Confusion counts at X: {'TP': 330, 'FN': 23, 'FP': 63, 'TN': 84}  ->  330*10 + 23*(-5) + 63*(-10) + 84*0 = 2555
+  Approval rate at X: 78.6%
+  (Reference: dataset itself approves 70.6%; approving everyone would earn 2060)
+  [figure saved -> outputs/step4_2_profit_curve.png]
+
+==============================================================================
+STEP 4.3 - Histogram with threshold
+==============================================================================
+  [figure saved -> outputs/step4_3_histogram_threshold.png]
+  [figure saved -> outputs/step4_3_histogram_threshold_by_actual_class.png]
+
+==============================================================================
+STEP 4.4 - Favorable vs. unfavorable outcomes (single threshold)
+==============================================================================
+                                 Favorable (Approved)  Unfavorable (Denied)  Total  Approval rate
+Privileged: Old (age > 25)                        330                    88    418          0.789
+Unprivileged: Young (age <= 25)                    63                    19     82          0.768
+  [table saved -> outputs/step4_4_outcomes_single_threshold.csv]
+
+==============================================================================
+STEP 5 - Fairness metrics (training set, single threshold)
+==============================================================================
+Approval rate privileged   (Old (age > 25)): 0.789
+Approval rate unprivileged (Young (age <= 25)): 0.768
+
+Step 5.3 table:
+              Fairness metric                                Definition  Computed value (unpriv vs priv)  Ideal value Acceptable range                                   Bias?  (context) value on dataset labels
+             Disparate Impact P(approved | unpriv) / P(approved | priv)                           0.9732          1.0      [0.8, 1.25] No significant bias (within fair range)                             0.8022
+Statistical Parity Difference P(approved | unpriv) - P(approved | priv)                          -0.0212          0.0      [-0.1, 0.1] No significant bias (within fair range)                            -0.1443
+  [table saved -> outputs/step5_3_fairness_metrics.csv]
+  [figure saved -> outputs/step5_2_fairness_metrics.png]
+
+Step 5.4 helper (facts for your discussion paragraph):
+  Disparate Impact = 0.973 -> No significant bias (within fair range) (dataset labels alone: 0.802)
+  Statistical Parity Difference = -0.021 -> No significant bias (within fair range) (dataset labels alone: -0.144)
+
+==============================================================================
+STEP 6.1 - Initial thresholds per group
+==============================================================================
+Starting thresholds: privileged = 48, unprivileged = 48
+  profit = 2555, Disparate Impact = 0.973, Statistical Parity Difference = -0.021
+
+==============================================================================
+STEP 6.2 - Optimise thresholds (training set)
+==============================================================================
+Optimisation: mode = constrained, metric = Disparate Impact, tolerance = 0.02
+Searched 9212 allowed threshold pairs out of 10000.
+  [figure saved -> outputs/step6_2_tradeoff_frontier.png]
+
+==============================================================================
+STEP 6.3 - Histograms per group
+==============================================================================
+  [figure saved -> outputs/step6_3_histograms_by_group.png]
+  [figure saved -> outputs/step6_3_histograms_by_group_actual_class.png]
+
+==============================================================================
+STEP 6.4 - Bias mitigation results (training set)
+==============================================================================
+1. Threshold privileged   (Old (age > 25)): 48
+   Threshold unprivileged (Young (age <= 25)): 47
+2. Profit with these thresholds: 2545   (single threshold 48: 2555; change -10)
+
+==============================================================================
+STEP 6.5 - Favorable vs. unfavorable outcomes (new thresholds)
+==============================================================================
+                                 Favorable (Approved)  Unfavorable (Denied)  Total  Approval rate
+Privileged: Old (age > 25)                        330                    88    418          0.789
+Unprivileged: Young (age <= 25)                    64                    18     82          0.780
+  [table saved -> outputs/step6_5_outcomes_new_thresholds.csv]
+
+Fairness metrics before vs. after mitigation:
+              Fairness metric                                Definition  Computed value (unpriv vs priv)  Ideal value Acceptable range                                   Bias?  Before (single threshold)
+             Disparate Impact P(approved | unpriv) / P(approved | priv)                           0.9886          1.0      [0.8, 1.25] No significant bias (within fair range)                     0.9732
+Statistical Parity Difference P(approved | unpriv) - P(approved | priv)                          -0.0090          0.0      [-0.1, 0.1] No significant bias (within fair range)                    -0.0212
+  [table saved -> outputs/step6_5_fairness_metrics_after.csv]
+  [figure saved -> outputs/step6_5_fairness_before_after.png]
+
+==============================================================================
+STEP 7 - Facts for the post-mitigation discussion
+==============================================================================
+Old (age > 25): approval rate 0.789 -> 0.789; TPR 0.931 -> 0.931; FPR 0.407 -> 0.407
+Young (age <= 25): approval rate 0.768 -> 0.780; TPR 0.958 -> 0.958; FPR 0.500 -> 0.529
+Profit from Old (age > 25): 2275 -> 2275
+Profit from Young (age <= 25): 280 -> 270
+Disparate Impact: 0.973 -> 0.989 (No significant bias (within fair range))
+Statistical Parity Difference: -0.021 -> -0.009 (No significant bias (within fair range))
+
+(Extra) Same thresholds applied to the held-out TEST set:
+  Single threshold 48: profit 1885, Disparate Impact 0.899, Statistical Parity Difference -0.083
+  Thresholds (48, 47): profit 1855, Disparate Impact 0.933, Statistical Parity Difference -0.055
